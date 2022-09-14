@@ -26,6 +26,8 @@ class ResultsLogger():
                     else:
                         data = x[k]
                     self.store_dict[k] = data.detach().cpu().numpy()
+                    if(k == 'audio' or k == 'synth_audio'):
+                        print('self store k 1: ', self.store_dict[k].shape)
         else:
             for x in data:
                 for k in x.keys():
@@ -38,6 +40,8 @@ class ResultsLogger():
                     self.store_dict[k] = np.concatenate(
                                     (self.store_dict[k],data.detach().cpu().numpy()),
                                     axis=concat_dim)
+                    if(k == 'audio' or k == 'synth_audio'):
+                        print('self store k 2: ', self.store_dict[k].shape)
                     #print("[DEBUG] ResultsLogger: Concat {}: {}".format(k,self.store_dict[k].shape))
         self.step_count += 1
         return
@@ -247,6 +251,7 @@ class Trainer():
         time.sleep(5) #Wait for all models to be written to disk.
 
         model = model.eval()
+        ctr = 0
         for k in self.loaders.keys():
             if(k == 'train'): continue
             print(k)
@@ -265,6 +270,7 @@ class Trainer():
 
             for x in self.loaders[k]:
                 x = self.preprocessor.run(x)
+                print('len audio', x['audio'].shape)
                 synth_out = model(x)
                 # Check if we apply a special test fn for testing only
                 if(self.hp.test_loss_fn is not None):
@@ -310,6 +316,7 @@ class Trainer():
             self.test(self.model)
 
         elif(mode == 'test'):
+            self.model = self.load_checkpoint(self.model,-1)
             self.test(self.model)
 
         return model
