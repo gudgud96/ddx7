@@ -10,7 +10,7 @@ testset:
 
 # URMP Dataset process options
 urmp:
-  source_folder: '/homes/fsc01/proj/URMP/Dataset' # path to urmp dataset finishing in ... "/URMP/Dataset"
+  source_folder: 'E://URMP//Dataset' # path to urmp dataset finishing in ... "/URMP/Dataset"
   instruments:  #URMP IDs of instruments
     'vn': 'violin'
     'tpt': 'trumpet'
@@ -21,7 +21,7 @@ urmp:
   output_dir: 'data/train'
 
 data_processor:
-  _target_: create_data.ProcessData
+  _target_: dataset.create_data.ProcessData
   silence_thresh_dB: 40                 # Silence threshold for splitting instances.
   sr: 16000                             # Sample rate
   device: 'cuda:0'                      # Torch Device ID

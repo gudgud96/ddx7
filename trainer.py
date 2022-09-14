@@ -270,7 +270,18 @@ class Trainer():
 
             for x in self.loaders[k]:
                 x = self.preprocessor.run(x)
-                print('len audio', x['audio'].shape)
+                print("INPUTS")
+                for k in x.keys():
+                   print(f'\t{k}: {x[k].size()} ')
+                #    print("sf writing")
+                #    sf.write(
+                #         "for_testing_only.wav",
+                #         x['audio'][0,:,0].cpu().detach().numpy(),
+                #         model.get_sr(),
+                #     )
+
+                print('')
+
                 synth_out = model(x)
                 # Check if we apply a special test fn for testing only
                 if(self.hp.test_loss_fn is not None):

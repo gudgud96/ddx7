@@ -4,8 +4,8 @@ defaults:
 
 instrument: violin
 device: cuda:0
-mode: train
-data_dir: dataset/data          # Processed data dir
+mode: test
+data_dir: data                  # Processed data dir
 load_additional_testset: False  # Load additional testset from external files.
 seed: 1234
 train_split: 0.75               # Split factor for URMP train set. Rest is halved in valid and test set.

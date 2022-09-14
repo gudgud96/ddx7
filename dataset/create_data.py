@@ -8,7 +8,7 @@ from shutil import copyfile
 import torch
 import numpy as np
 import h5py
-from ddx7 import spectral_ops
+from  ddx7 import spectral_ops
 import operator
 import functools
 import json
@@ -20,6 +20,12 @@ URMP Data processor class adapted from HTP paper.
 https://github.com/mosheman5/timbre_painting
 
 '''
+
+class dotdict(dict):
+    """dot.notation access to dictionary attributes"""
+    __getattr__ = dict.get
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
 
 class ProcessData():
     def __init__(self, silence_thresh_dB, sr, device, seq_len,
@@ -88,6 +94,8 @@ class ProcessData():
 
 
     def extract_f0(self, audio):
+        if isinstance(self.crepe_params, dict):
+            self.crepe_params = dotdict(self.crepe_params)
         (f0,confidence) = spectral_ops.calc_f0(audio,
                                 rate=self.sr,
                                 hop_size=self.hop_size,
@@ -109,6 +117,8 @@ class ProcessData():
         return f0
 
     def calc_loudness(self,audio):
+        if isinstance(self.loudness_params, dict):
+            self.loudness_params = dotdict(self.loudness_params)
         loudness = spectral_ops.calc_loudness(audio, rate=self.sr,
                                             n_fft=self.loudness_params.nfft,
                                             hop_size=self.hop_size,
@@ -121,6 +131,8 @@ class ProcessData():
 
     # TODO: Add center padding capability here.
     def calc_rms(self,audio):
+        if isinstance(self.rms, dict):
+            self.rms = dotdict(self.rms)
         rms = spectral_ops.calc_power(audio, frame_size=self.rms.frame_size,
                                         hop_size=self.hop_size,pad_end=True)
         rms = self.pad_to_expected_size(rms,
